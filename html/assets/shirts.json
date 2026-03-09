@@ -1,0 +1,36 @@
+{ "items": 
+  [
+    {
+      "id": "shirt-001",
+      "name": "The American Quarterm Millennium Red",
+      "image": "taqm_red_800.jpg",
+      "price": 17.76,
+      "currency": "USD",
+      "link": "https://weaqm.preview.teespring.com/listing/get-the-american-quarter-mille?product=2&variation=568"
+    },
+    {
+      "id": "shirt-002",
+      "name": "The American Quarterm Millennium White",
+      "image": "taqm_white_800.jpg",
+      "price": 17.76,
+      "currency": "USD",
+      "link": "https://weaqm.creator-spring.com/listing/the-american-quarter-millenniu?product=2&variation=2122"
+    },
+    {
+      "id": "shirt-003",
+      "name": "The American Quarterm Millennium Blue",
+      "image": "taqm_blue_800.jpg",
+      "price": 17.76,
+      "currency": "USD",
+      "link": "https://weaqm.preview.teespring.com/listing/new-the-american-quarter-mille?product=2&variation=569"
+    },
+    {
+      "id": "shirt-004",
+      "name": "The American Quarterm Millennium Floral",
+      "image": "taqm_floral_800.jpg",
+      "price": 17.76,
+      "currency": "USD",
+      "link": "https://weaqm.preview.teespring.com/listing/red-white-blue-floral-women?product=87&variation=2324"
+    }
+  ]
+}

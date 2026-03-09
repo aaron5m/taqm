@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            text-align: center;
+            background-color: white;
+        }
+        .center-1200 {
+            width: 100%;
+            max-width: 1200px;
+            display: inline-block;
+        }
+        .center-900 {
+            width: 100%;
+            max-width: 900px;
+            display: inline-block;
+        }
+        .center-800 {
+            width: 100%;
+            max-width: 800px;
+            display: inline-block;
+        }
+        .shirt-block {
+            display: inline-block;
+            width: 80%;
+            max-width: 800px;
+            margin: 20px;
+            padding: 10px;
+            border: solid black 2px;
+            cursor: pointer;
+        }
+        .shirt-image {
+            width: 100%;
+            object-fit: contain;
+        }
+    </style>
+
+</head>
+<body>
+    <h3>1776 - 2026</h3>
+    <h1>The American Quarter Millennium</h1>
+    <img src="images/taqm_bnw_front_logo_watermark_com.png" class="center-1200"/>
+    <br>
+    <div id="main-block"></div>
+    <br>
+    <img src="images/taqm_bnw_back_logo_watermark_com.png" class="center-800"/>
+    <br>
+
+    <script>
+        async function loadShirts() {
+            try {
+                const response = await fetch('assets/shirts.json');
+                const shirts = await response.json();
+                showShirts(shirts);
+            } catch (error) {
+                console.error('Error loading shirts:', error);
+            }
+        }
+        function showShirts(shirts) {
+            const items = shirts.items;
+            const main = document.getElementById("main-block");
+            for (i = 0; i < items.length; i++) {
+                // new element for shirt
+                const el = document.createElement("div");
+                el.className = "shirt-block";
+                // add image to element
+                const imag = document.createElement("img");
+                imag.className = "shirt-image"
+                imag.src = "images/"+items[i].image;
+                el.append(imag);
+                // add price to element
+                const price = document.createElement("div");
+                price.innerHTML = "$"+items[i].price;
+                el.append(price);
+                // add click functionality
+                const link = items[i].link;
+                el.addEventListener("click", ()=>{
+                    window.location = link;
+                })
+                // add element to page
+                main.append(el);
+            }
+        }
+
+        loadShirts();
+
+    </script>
+</body>
