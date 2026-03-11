@@ -3,6 +3,15 @@ import styles from './Signup.module.css';
 
 export default function App() {
   const [user, setUser] = useState({ username: '', email: '', password_input: '' });
+  const [emailInput, setEmailInput] = useState("");
+  const [error, setError] = useState("");
+
+  function validateEmailInput(e) {
+    const val = e.target.value;
+    console.log("whatever");
+    setEmailInput(val);
+    setError(/\S+@\S+\.\S+/.test(val) ? "" : "Invalid email");
+  }
 
   const submit = async (e) => {
     e.preventDefault();
@@ -30,9 +39,16 @@ export default function App() {
           <input 
             className={styles.input}
             type="email" 
+            value={emailInput}
             placeholder="Email" 
-            onChange={e => setUser({...user, email: e.target.value})} 
+            onChange={ (e) => {
+                validateEmailInput(e);
+                setUser({...user, email: e.target.value})
+              }
+            }
+            required
           />
+          {error && <p style={{ color: "red" }}>{error}</p>}
           <input 
             className={styles.input}
             type="password" 
