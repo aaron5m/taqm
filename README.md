@@ -6,8 +6,8 @@ Data
 
 **Docker** keeps the project coherent and isolated (**VPC**).
 
-Frontend uses **React/Vite** to develop, builds to static, all inside docker.  
-SRE uses **nginx** (or other) outside of docker, only serves Frontend's static, calls API.  
+SRE uses **nginx** (or other) outside of docker, only serves static, calls API.   
+Frontend uses **React/Vite** to develop, builds to static, all inside docker.    
 Backend coordinates through **node server.js** inside docker only exposed to localhost.  
 Data builds models with **fastapi**, **postgres** stores under docker, fastapi to localhost.  
 
