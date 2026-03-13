@@ -129,8 +129,10 @@ app.get("/authorize", (req, res) => {
 
 
 // UPLOAD
-const uploadDir = path.join(__dirname, "uploads");
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir);
+const uploadDir = "/app/html_images";
+const copyDir = "/app/frontend_public_images";
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+if (!fs.existsSync(copyDir)) fs.mkdirSync(copyDir, { recursive: true });
 const upload = multer({ storage: multer.memoryStorage() });
 
 // route
@@ -143,10 +145,9 @@ app.post(
   async (req, res) => {
     try {
       const { username, url, description } = req.body;
-
       // validate username, url, and description
       if (!utils.isEightAlphanumerics(username) || !(await utils.isExistingUsername(username))) {
-        return res.status(401).json({ message: "Invalid username" });
+        return res.status(401).json({ message: "Invalid username:" + username });
       }
       if (!url) return res.status(401).json({ error: "URL required" });
       try { new URL(url); } catch { return res.status(401).json({ error: "Invalid URL" }); }
@@ -158,7 +159,7 @@ app.post(
       const processedFiles = {};
       for (const fieldName of ["front", "back"]) {
         const file = req.files[fieldName]?.[0];
-        if (!file) res.status(401).json({ error: "Image required" });
+        if (!file) return res.status(401).json({ error: "Image required" });
         const type = await fileTypeFromBuffer(file.buffer);
         if (!type || !type.mime.startsWith("image/")) {
           return res.status(400).json({ error: `${fieldName} is not a valid image` });
@@ -166,8 +167,14 @@ app.post(
         // generate filename and write to disk
         const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
         const filename = `${uniqueSuffix}-${file.originalname}`.replace(/\s+/g, "");
-        const filepath = path.join(uploadDir, filename);
-        fs.writeFileSync(filepath, file.buffer);
+        const filepathOne = path.join(uploadDir, filename);
+        const filepathTwo = path.join(copyDir, filename);
+        console.log(filepathOne, filepathTwo);
+        console.log("Checking path:", filepathOne);
+        fs.mkdirSync(path.dirname(filepathOne), { recursive: true });
+        fs.writeFileSync(filepathOne, file.buffer);
+        fs.mkdirSync(path.dirname(filepathTwo), { recursive: true });
+        fs.writeFileSync(filepathTwo, file.buffer);
         processedFiles[fieldName] = filename;
       }
 
@@ -178,6 +185,7 @@ app.post(
         description,
         photos: processedFiles,
       };
+      console.log("this far");
       const response = await axios.post("http://fastapi:8000/upload", payload);
       res.json(response.data);
     } catch (err) {

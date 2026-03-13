@@ -19,14 +19,14 @@ export default function ItemCard({ item }) {
       <div style={{ display: "flex", gap: "8px", marginBottom: "12px" }}>
         {item.photos.front && (
           <img
-            src={`/uploads/${item.photos.front}`}
+            src={`./images/${item.photos.front}`}
             alt="Front"
             style={{ width: "48%", borderRadius: "4px", objectFit: "cover" }}
           />
         )}
         {item.photos.back && (
           <img
-            src={`../images/${item.photos.back}`}
+            src={`./images/${item.photos.back}`}
             alt="Back"
             style={{ width: "48%", borderRadius: "4px", objectFit: "cover" }}
           />
