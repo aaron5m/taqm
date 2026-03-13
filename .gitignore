@@ -31,3 +31,10 @@ password.env
 **.env
 .env.*
 docker-compose.override.yml
+
+# Images
+**/images/*
+!**/images/.gitkeep
+
+# Old HTML
+html_old/
