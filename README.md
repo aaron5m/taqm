@@ -25,14 +25,14 @@ Data builds models with **fastapi**, **postgres** stores under docker, fastapi t
                                    |
 ---- DOCKER CONTAINER SUBNET ------|-----------------------------------------|
                                    |
-                 +-----------------+-----------------+ <----<--------              
-                 |                                   |               ^
-                 v                                   v               |
+                 +-----------------+---------------+ <----<----------              
+                 |                                 |                 ^
+                 v                                 v                 |
                                                                      |
-        (Serves Static Frontend)             (API Traffic)           |
+       (Serves Static Frontend)             (API Traffic)           |
       +-----------------------+        +-----------------------+     ^
-      |   NGINX Static HTML   |  --->  |    NodeJS Instances    |    |
-      |  Compiled Frontend    |  <---  |  (Multiple Containers) |    |
+      |     Static HTML       |  --->  |        NodeJS         |     |
+      |  Compiled Frontend    |  <---  |        Server         |     |
       +-----------------------+        +-----------------------+     |
                ^                                   ^                 |
                |                                   |                 ^
