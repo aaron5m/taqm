@@ -1,4 +1,4 @@
-**TAQM** - working architecture for:    
+**TAQM** - working tiered architecture for:    
 SRE  
 Fronted  
 Backend  
