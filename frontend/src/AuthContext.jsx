@@ -5,10 +5,12 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [compeer, setCompeer] = useState(null);
   const [loading, setLoading] = useState(true);
+  const nodeUrl = import.meta.env.VITE_NODE_URL;
+  const fastapiUrl = import.meta.env.VITE_FASTAPI_URL;
 
   const checkAuth = async () => {
     setLoading(true);
-    const res = await fetch("http://localhost:3000/authorize", {
+    const res = await fetch(`${nodeUrl}/authorize`, {
       method: "POST",
       credentials: "include",
     });
@@ -22,7 +24,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ compeer, checkAuth }}>
+    <AuthContext.Provider value={{ compeer, checkAuth, nodeUrl, fastapiUrl }}>
       {!loading && children}
     </AuthContext.Provider>
   );

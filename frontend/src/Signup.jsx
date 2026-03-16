@@ -5,7 +5,7 @@ import { useState } from 'react';
 import styles from "./index.module.css"
 
 export default function Signup() {
-  const { compeer } = useAuth();
+  const { compeer, nodeUrl } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState({ username: '', email: '', password_input: '' });
@@ -73,7 +73,7 @@ export default function Signup() {
   // submit form
   const submit = async (e) => {
     e.preventDefault();
-    const res = await fetch('http://localhost:3000/signup', {
+    const res = await fetch(`${nodeUrl}/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',

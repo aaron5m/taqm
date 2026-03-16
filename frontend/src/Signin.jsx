@@ -5,7 +5,7 @@ import { useState } from 'react';
 import styles from "./index.module.css"
 
 export default function Signin() {
-  const { compeer, checkAuth } = useAuth();
+  const { compeer, checkAuth, nodeUrl } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [user, setUser] = useState({ username: '', email: '', password_input: '' });
@@ -19,7 +19,7 @@ export default function Signin() {
 
   const submit = async (e) => {
     e.preventDefault();
-    const res = await fetch('http://localhost:3000/signin', {
+    const res = await fetch(`${nodeUrl}/signin`, {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },

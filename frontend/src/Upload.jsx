@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./App.css";
 
 export default function Upload() {
-  const { compeer } = useAuth();
+  const { compeer, nodeUrl } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -44,7 +44,7 @@ export default function Upload() {
     if (formData.back) data.append("back", formData.back);
 
     try {
-      const res = await fetch("http://localhost:3000/upload", {
+      const res = await fetch(`${nodeUrl}/upload`, {
         method: "POST",
         credentials: "include",
         body: data, // FormData automatically sets multipart/form-data

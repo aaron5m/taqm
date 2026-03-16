@@ -3,17 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./index.module.css";
 
 export default function Navbar() {
-  const { compeer } = useAuth();
+  const { compeer, nodeUrl } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-
-  const handleSignOut = async () => {
-    await fetch("http://localhost:3000/signout", {
-      method: "POST",
-      credentials: "include",
-    });
-    window.location.reload();
-  };
 
   return (
     <nav style={{

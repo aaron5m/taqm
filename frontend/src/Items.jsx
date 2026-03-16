@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "./AuthContext";
 import ItemCard from "./ItemCard";
 
 function Items() {
+  const { fastapiUrl } = useAuth();
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/items")
+    fetch(`${fastapiUrl}/items`)
       .then(res => res.json())
       .then(data => setItems(data.items));
   }, []);

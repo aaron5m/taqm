@@ -5,7 +5,7 @@ import { useState } from 'react';
 import styles from "./index.module.css"
 
 export default function Profile() {
-  const { compeer } = useAuth();
+  const { compeer, nodeUrl } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -18,7 +18,7 @@ export default function Profile() {
 
   const submit = async (e) => {
     e.preventDefault();
-    const res = await fetch("http://localhost:3000/signout", {
+    const res = await fetch(`${nodeUrl}/signout`, {
       method: "POST",
       credentials: "include",
     });
