@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel, Field
 from datetime import datetime
 from typing import Optional, List
-from sqlalchemy import Column, JSON
+from sqlalchemy import Column, JSON, text
 
 class Link(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -21,3 +21,12 @@ class Compeer(SQLModel, table=True):
     email: str = Field(unique=True)
     password_input: str  # Never store plain text passwords!
     timestamp: datetime = Field(default_factory=datetime.utcnow)
+    signup_verification: str = Field(nullable=True)
+    verified: bool = Field(
+        default=False,                     # Python default for new objects
+        sa_column_kwargs={"server_default": text("false")}  # DB default for migration
+    )
+    balance: float = Field(
+        default=0.0,
+        sa_column_kwargs={"server_default": text("0.0")}
+    )

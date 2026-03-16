@@ -5,14 +5,13 @@ from .auth import hash_password
 from .models import Link, Compeer # SQLModel class
 from .db import engine
 from .utils import *
-
-# THIS MIDDLEWARE IS SAFE ENOUGH BUT SHOULD BE REMOVED
 from fastapi.middleware.cors import CORSMiddleware
-# REMOVE MIDDLEWARE ABOVE
 
 app = FastAPI()
 
-# THIS MIDDLEWARE IS SAFE ENOUGH BUT SHOULD BE REMOVED
+
+
+# MIDDLEWARE FOR LOCALHOST
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", 
@@ -22,13 +21,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# REMOVE THE MIDDLEWARE ABOVE
+
+
 
 # CHECK FOR A USERNAME
 @app.get("/compeer")
 def compeer(username: str = Query(...)):
     exists = check_username(username)
     return {"exists": exists}
+
+
 
 # GET PASSWORD HASH FOR A USERNAME
 @app.get("/get-hash")
@@ -39,6 +41,8 @@ def get_hash(username: str = Query(...)):
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
         return {"hash": user.password_input}
+
+
 
 # SIGNUP PROCESSING
 @app.post("/signup")
@@ -52,6 +56,8 @@ def create_user(user_data: Compeer):
         session.commit()
         session.refresh(user_data)
         return {"status": "success", "username": user_data.username}
+
+
 
 # UPLOAD PROCESSING
 @app.post("/upload")
@@ -80,13 +86,15 @@ def create_link(link_data: dict):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# SEE FOUR RENTRIES
+
+
+# SEE TEN ENTRIES
 @app.get("/items")
 def get_items():
     try:
         with Session(engine) as session:
             result = session.execute(
-                text("SELECT * FROM link ORDER BY id LIMIT 4")
+                text("SELECT * FROM link ORDER BY id LIMIT 10")
             )
             items = [dict(row._mapping) for row in result]
         return {"items": items}

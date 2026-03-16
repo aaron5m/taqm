@@ -16,8 +16,6 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// HELPERS AT BOTTOM
-
 // Allow local only cors
 app.use(cors({
   origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:8080"],
@@ -44,6 +42,16 @@ app.post("/signup", async(req, res) => {
   // hash
   const hash = await bcrypt.hash(password_input, 10); // 10 salt rounds
 
+  // signup verification string for email verify
+  const signup_verification_string = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let verification_string = '';
+    for (let i = 0; i < 20; i++) {
+      verification_string += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return verification_string;
+  };
+
   // send to FastAPI
   try {
     const response = await fetch("http://fastapi:8000/signup", {
@@ -52,7 +60,8 @@ app.post("/signup", async(req, res) => {
       body: JSON.stringify({
         username,
         email,
-        password_input: hash
+        password_input: hash,
+        signup_verification: signup_verification_string()
       })
     });
     const data = await response.json();
