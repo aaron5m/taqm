@@ -23,6 +23,7 @@ services:
       - fastapi
     environment:
       FASTAPI_URL: http://fastapi:8000
+      SECRET: ${SECRET}
     networks:
       - backend
     ports:

@@ -1,4 +1,3 @@
-require("dotenv").config();
 const utils = require("./utils.js");
 const express = require("express");
 const multer = require("multer");
