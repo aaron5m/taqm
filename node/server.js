@@ -28,7 +28,7 @@ app.use(cors({
 
 
 // SIGNUP
-app.post("/signup", async(req, res) => {
+app.post("/api/signup", async(req, res) => {
   const { username, email, password_input } = req.body;
   
   // validate
@@ -57,7 +57,7 @@ app.post("/signup", async(req, res) => {
 
   // send to FastAPI
   try {
-    const response = await fetch("http://fastapi:8000/signup", {
+    const response = await fetch("http://fastapi:8000/pyapi/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -81,7 +81,7 @@ app.post("/signup", async(req, res) => {
 
 
 // SIGNIN
-app.post("/signin", async(req, res) => {
+app.post("/api/signin", async(req, res) => {
   const { username, password_input } = req.body;
   
   // validate
@@ -95,7 +95,7 @@ app.post("/signin", async(req, res) => {
   // hash and compare with db hash
   let match = false;
   try {
-    const response = await fetch(`http://fastapi:8000/get-hash?username=${username}`);
+    const response = await fetch(`http://fastapi:8000/pyapi/get-hash?username=${username}`);
     if (!response.ok) return false;
     const data = await response.json();
     const storedHash = data.hash;
@@ -128,7 +128,7 @@ app.post("/signin", async(req, res) => {
 
 
 // SIGNOUT
-app.post("/signout", (req, res) => {
+app.post("/api/signout", (req, res) => {
   res.clearCookie("access_token", {
     httpOnly: true,
     secure: false,      
@@ -141,7 +141,7 @@ app.post("/signout", (req, res) => {
 
 
 // AUTHORIZE
-app.post("/authorize", (req, res) => {
+app.post("/api/authorize", (req, res) => {
   const token = req.cookies.access_token;
   if (!token) return res.json({ loggedIn: false });
   try {
@@ -165,7 +165,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // route
 app.post(
-  "/upload",
+  "/api/upload",
   upload.fields([
     { name: "front", maxCount: 1 },
     { name: "back", maxCount: 1 },
@@ -208,7 +208,7 @@ app.post(
         description,
         photos: processedFiles,
       };
-      const response = await axios.post("http://fastapi:8000/upload", payload);
+      const response = await axios.post("http://fastapi:8000/pyapi/upload", payload);
       res.json(response.data);
     } catch (err) {
       console.error(err);
@@ -222,7 +222,7 @@ app.post(
 // Example route calling FastAPI
 app.get("/api/predict", async (req, res) => {
   try {
-    const response = await axios.get("http://fastapi:8000/predict");
+    const response = await axios.get("http://fastapi:8000/pyapi/predict");
     res.json(response.data);
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -45,7 +45,7 @@ services:
       - ./html:/app/web_pages
       - ./html/images:/app/html_images
       - ./frontend/public/images:/app/frontend_public_images
-    command: sh -c "mkdir -p /app/web_pages; cp -Rpu /app/dist/* /app/web_pages/; cp -Rpn /app/frontend_public_images/* /app/html_images/"
+    command: sh -c "rm -rf /app/web_pages/assets /app/web_pages/index.html; mkdir -p /app/web_pages; cp -Rpu /app/dist/* /app/web_pages/; cp -Rpn /app/frontend_public_images/* /app/html_images/"
 
   fastapi:
     build: ./fastapi

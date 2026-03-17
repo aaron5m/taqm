@@ -27,7 +27,7 @@ app.add_middleware(
 
 
 # CHECK FOR A USERNAME
-@app.get("/compeer")
+@app.get("/pyapi/compeer")
 def compeer(username: str = Query(...)):
     exists = check_username(username)
     return {"exists": exists}
@@ -35,7 +35,7 @@ def compeer(username: str = Query(...)):
 
 
 # GET PASSWORD HASH FOR A USERNAME
-@app.get("/get-hash")
+@app.get("/pyapi/get-hash")
 def get_hash(username: str = Query(...)):
     with Session(engine) as session:
         statement = select(Compeer).where(Compeer.username == username)
@@ -47,7 +47,7 @@ def get_hash(username: str = Query(...)):
 
 
 # SIGNUP PROCESSING
-@app.post("/signup")
+@app.post("/pyapi/signup")
 def create_user(user_data: Compeer):
     with Session(engine) as session:
         # 1. Overwrite the input with the hash
@@ -62,7 +62,7 @@ def create_user(user_data: Compeer):
 
 
 # UPLOAD PROCESSING
-@app.post("/upload")
+@app.post("/pyapi/upload")
 def create_link(link_data: dict):
     """
     Expects JSON from Node.js like:
@@ -91,7 +91,7 @@ def create_link(link_data: dict):
 
 
 # SEE TEN ENTRIES
-@app.get("/items")
+@app.get("/pyapi/items")
 def get_items():
     try:
         with Session(engine) as session:

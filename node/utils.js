@@ -13,7 +13,7 @@ export function isEightAlphanumerics(str) {
 
 export async function isNewUsername(username) {
   try {
-    const res = await fetch(`http://fastapi:8000/compeer?username=${username}`);
+    const res = await fetch(`http://fastapi:8000/pyapi/compeer?username=${username}`);
     const data = await res.json();
     return data.exists === false; // true only if username is NOT found
   } catch (err) {
@@ -24,7 +24,7 @@ export async function isNewUsername(username) {
 
 export async function isExistingUsername(username) {
   try {
-    const res = await fetch(`http://fastapi:8000/compeer?username=${username}`);
+    const res = await fetch(`http://fastapi:8000/pyapi/compeer?username=${username}`);
     const data = await res.json();
     console.log("FastAPI response:", data);
     return data.exists === true; 

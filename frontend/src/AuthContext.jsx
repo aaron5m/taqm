@@ -8,8 +8,8 @@ export function AuthProvider({ children }) {
   //const nodeUrl = import.meta.env.VITE_NODE_URL;
   //const fastapiUrl = import.meta.env.VITE_FASTAPI_URL;
   const vitePassUrl = process.env.VITE_PASS_URL;
-  const nodeUrl = `${vitePassUrl}:3000`;
-  const fastapiUrl = `${vitePassUrl}:8000`;
+  const nodeUrl = `${vitePassUrl}:3000/api`;
+  const fastapiUrl = `${vitePassUrl}:8000/pyapi`;
   console.log(vitePassUrl, nodeUrl, fastapiUrl);
 
   const checkAuth = async () => {
