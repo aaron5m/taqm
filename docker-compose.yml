@@ -15,7 +15,7 @@ services:
       - vite_dist:/app/dist
       - ./html:/app/web_pages
       #- /app/node_modules
-    command: sh -c "npm run build && chmod -R 777 /app/dist"
+    command: sh -c "npm run build && chmod -R 777 /app/dist && touch /app/dist/.build_complete"
 
   node:
     build: ./node
@@ -45,7 +45,19 @@ services:
       - ./html:/app/web_pages
       - ./html/images:/app/html_images
       - ./frontend/public/images:/app/frontend_public_images
-    command: sh -c "rm -rf /app/web_pages/assets /app/web_pages/index.html; mkdir -p /app/web_pages; cp -Rpu /app/dist/* /app/web_pages/; cp -Rpn /app/frontend_public_images/* /app/html_images/"
+    # command: sh -c "rm -rf /app/web_pages/assets /app/web_pages/index.html; mkdir -p /app/web_pages; cp -Rpu /app/dist/* /app/web_pages/; cp -Rpn /app/frontend_public_images/* /app/html_images/"
+    command: >
+      sh -c '
+      while [ ! -f /app/dist/.build_complete ]; do
+        echo "Waiting for frontend build to complete...";
+        sleep 1;
+      done;
+      rm -rf /app/web_pages/assets /app/web_pages/index.html;
+      mkdir -p /app/web_pages /app/web_pages/assets;
+      cp -R /app/dist/assets/* /app/web_pages/assets/;
+      cp /app/dist/index.html /app/web_pages/index.html;
+      cp -Rpn /app/frontend_public_images/* /app/html_images/;
+      '
 
   fastapi:
     build: ./fastapi
