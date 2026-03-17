@@ -14,7 +14,7 @@ services:
     volumes:
       - vite_dist:/app/dist
       - ./html:/app/web_pages
-      #- ./frontend/node_modules:/app/node_modules
+      #- /app/node_modules
     command: sh -c "npm run build && chmod -R 777 /app/dist"
 
   node:
