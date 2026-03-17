@@ -7,7 +7,10 @@ function Items() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    fetch(`${fastapiUrl}/items`)
+    fetch(`${fastapiUrl}/items`, {
+      method: "GET",
+      credentials: "include"
+    })
       .then(res => res.json())
       .then(data => setItems(data.items));
   }, []);
