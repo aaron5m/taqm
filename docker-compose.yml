@@ -1,6 +1,14 @@
 services:
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_PASS_URL: ${VITE_PASS_URL}
+    environment:
+      VITE_PASS_URL: ${VITE_PASS_URL}
+    ports:
+      - 5173:5173
     depends_on:
       - node
     volumes:
@@ -36,7 +44,7 @@ services:
       - ./html:/app/web_pages
       - ./html/images:/app/html_images
       - ./frontend/public/images:/app/frontend_public_images
-    command: sh -c "mkdir -p /app/web_pages; cp -Rpn /app/dist/* /app/web_pages/; cp -Rpn /app/frontend_public_images/* app/html_images/"
+    command: sh -c "mkdir -p /app/web_pages; cp -Rpu /app/dist/* /app/web_pages/; cp -Rpn /app/frontend_public_images/* app/html_images/"
 
   fastapi:
     build: ./fastapi

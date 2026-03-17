@@ -5,8 +5,12 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [compeer, setCompeer] = useState(null);
   const [loading, setLoading] = useState(true);
-  const nodeUrl = import.meta.env.VITE_NODE_URL;
-  const fastapiUrl = import.meta.env.VITE_FASTAPI_URL;
+  //const nodeUrl = import.meta.env.VITE_NODE_URL;
+  //const fastapiUrl = import.meta.env.VITE_FASTAPI_URL;
+  const vitePassUrl = process.env.VITE_PASS_URL;
+  const nodeUrl = `${vitePassUrl}:3000`;
+  const fastapiUrl = `${vitePassUrl}:8000`;
+  console.log(vitePassUrl, nodeUrl, fastapiUrl);
 
   const checkAuth = async () => {
     setLoading(true);

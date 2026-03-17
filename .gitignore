@@ -32,6 +32,7 @@ password.env
 .env.*
 docker-compose.override.yml
 *.bak
+**.bak
 
 # Images
 **/images/*
