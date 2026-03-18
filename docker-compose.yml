@@ -46,19 +46,8 @@ services:
       - ./html:/app/web_pages
       - ./html/images:/app/html_images
       - ./frontend/public/images:/app/frontend_public_images
-    # command: sh -c "rm -rf /app/web_pages/assets /app/web_pages/index.html; mkdir -p /app/web_pages; cp -Rpu /app/dist/* /app/web_pages/; cp -Rpn /app/frontend_public_images/* /app/html_images/"
-    command: >
-      sh -c '
-      while [ ! -f /app/dist/.build_complete ]; do
-        echo "Waiting for frontend build to complete...";
-        sleep 1;
-      done;
-      rm -rf /app/web_pages/assets /app/web_pages/index.html;
-      mkdir -p /app/web_pages /app/web_pages/assets;
-      cp -R /app/dist/assets/* /app/web_pages/assets/;
-      cp /app/dist/index.html /app/web_pages/index.html;
-      cp -Rpn /app/frontend_public_images/* /app/html_images/;
-      '
+      - ./sync_html_frontend.sh:/app/sync_html_frontend.sh
+    command: sh /app/sync_html_frontend.sh
 
   fastapi:
     build: ./fastapi
