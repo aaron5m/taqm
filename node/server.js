@@ -1,3 +1,13 @@
+/*
+ * Node will work with React/Vite dev mode
+ *  AND with their build served from the html folder (production)
+ * 
+ * IMPORTANTLY
+ *  ONLY calls through Node can actually ask FastAPI to alter the database.
+ *  These calls are separated in this page of code, and visually distinct for the use of
+ *   FASTAPI_URL, axios.post, *Notice
+*/
+
 const utils = require("./utils.js");
 const express = require("express");
 const multer = require("multer");
@@ -15,7 +25,16 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// Allow local only cors
+const FASTAPI_URL = process.env.FASTAPI_URL;
+const API_SECRET = ((str) => {
+  let h = 5381;
+  for (let i = 0; i < str.length; i++) {
+    h = (h * 33) ^ str.charCodeAt(i);
+  }
+  return (h >>> 0).toString(16);
+})(SECRET);
+
+// Allow local only cors for React/Vite development
 app.use(cors({
   origin: ["http://localhost:5173", 
     "http://localhost:5174", 
@@ -27,7 +46,7 @@ app.use(cors({
 
 
 
-// SIGNUP
+// SIGNUP *Notice *alters database
 app.post("/api/signup", async(req, res) => {
   const { username, email, password_input } = req.body;
   
@@ -57,21 +76,16 @@ app.post("/api/signup", async(req, res) => {
 
   // send to FastAPI
   try {
-    const response = await fetch("http://fastapi:8000/pyapi/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    const response = await axios.post(`${FASTAPI_URL}/pyapi/signup`, 
+      {
         username,
         email,
         password_input: hash,
         signup_verification: signup_verification_string()
-      })
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      return res.status(response.status).json(data);
-    }
-    res.json({ message: "Signed up", fastapi: data });
+      }, 
+      {headers: { "X-API-KEY": API_SECRET }}
+    );
+    res.json({ message: "Signed up", fastapi: response.data });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
@@ -154,7 +168,7 @@ app.post("/api/authorize", (req, res) => {
 
 
 
-// UPLOAD
+// UPLOAD *Notice *alters database
 const htmlDir = "/app/html_images";
 const viteDir = "/app/frontend_public_images";
 const usefulDirs = [htmlDir, viteDir];
@@ -202,13 +216,15 @@ app.post(
       }
 
       // handoff to fastapi
-      const payload = {
-        username,
-        url,
-        description,
-        photos: processedFiles,
-      };
-      const response = await axios.post("http://fastapi:8000/pyapi/upload", payload);
+      const response = await axios.post(`${FASTAPI_URL}/pyapi/upload`, 
+        {
+          username,
+          url,
+          description,
+          photos: processedFiles
+        }, 
+        {headers: { "X-API-KEY": API_SECRET }}
+      );
       res.json(response.data);
     } catch (err) {
       console.error(err);
@@ -219,21 +235,14 @@ app.post(
 
 
 
-// Example route calling FastAPI
-app.get("/api/predict", async (req, res) => {
-  try {
-    const response = await axios.get("http://fastapi:8000/pyapi/predict");
-    res.json(response.data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
+// TESTING
 app.get("/api/test", (req, res) => {
   res.json({ message: "Node API working" });
 });
 
 
+
+// LISTENER
 app.listen(3000, "0.0.0.0", () => {
   console.log("Node API running on port 3000");
 });
