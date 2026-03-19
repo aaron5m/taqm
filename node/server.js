@@ -7,10 +7,8 @@
  *  These calls are separated in this page of code, and visually distinct for the use of
  *   FASTAPI_URL, axios.post, *Notice
  * 
- * In production you should toggle VERIFICATION_REQUIRED to true,
- *  and a
 */
-const VERIFICATION_REQUIRED = true;
+
 
 const utils = require("./utils.js");
 const express = require("express");
@@ -21,7 +19,6 @@ const axios = require("axios");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = process.env.JWT_SECRET;
 const bcrypt = require("bcrypt");
 const { fileTypeFromBuffer } = require("file-type");
 
@@ -31,6 +28,8 @@ app.use(cookieParser());
 
 const FASTAPI_URL = process.env.FASTAPI_URL;
 const API_SECRET = process.env.API_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET;
+const VERIFICATION_REQUIRED = process.env.VERIFICATION_REQUIRED; // 0 means not required
 
 // Allow local only cors for React/Vite development
 app.use(cors({
@@ -104,7 +103,7 @@ app.post("/api/signin", async(req, res) => {
     return res.status(401).json({ message: "Invalid password" });
   }
 
-  // ensure a verified user if in production
+  // ensure a verified user if in production ****
   if (VERIFICATION_REQUIRED) {
     try {
       const response = await fetch(`http://fastapi:8000/pyapi/get-verification?username=${username}`);

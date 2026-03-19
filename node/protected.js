@@ -2,7 +2,6 @@ import axios from "axios";
 const FASTAPI_URL = process.env.FASTAPI_URL;
 const API_SECRET = process.env.API_SECRET;
 
-
 // VERIFY *Notice *alters database AND is NOT exposed to api
 export async function verify(username) {
   try {

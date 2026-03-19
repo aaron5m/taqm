@@ -1,13 +1,13 @@
 #!/usr/bin/env node
-const { verify, deactivateUser, listUsers } = require("./protected"); // import your internal functions
+const { verify, require_verification } = require("./protected"); // import your internal functions
 
 // Command-line arguments
-const command = process.argv[2];   // e.g., "verify"
-const target = process.argv[3];    // e.g., "bob"
+const command = process.argv[2];  
+const target = process.argv[3];   
 
 if (!command) {
   console.error("Usage: node admin.js <command> [target]");
-  console.error("Available commands: verify, deactivate, list");
+  console.error("Available commands: verify, require_verification");
   process.exit(1);
 }
 
@@ -22,18 +22,15 @@ const commands = {
     console.log(success ? `User ${username} verified` : `Failed to verify ${username}`);
   },
 
-  deactivate: async (username) => {
-    if (!username) {
-      console.error("Usage: node admin.js deactivate <username>");
+  require_verification: (x) => {
+    const i = Number(x);
+    if (i !== 0 && i !== 1) {
+      console.error("Usage: node admin.js require_verification <0 or 1>");
       process.exit(1);
     }
-    const success = await deactivateUser(username);
-    console.log(success ? `User ${username} deactivated` : `Failed to deactivate ${username}`);
-  },
-
-  list: async () => {
-    const users = await listUsers();
-    console.log("Users:", users);
+    const mode = require_verification(i);
+    if (mode === false) "Command failed to execute";
+    console.log(mode ? "now verification is REQUIRED" : "now verification is NOT required");
   },
 };
 

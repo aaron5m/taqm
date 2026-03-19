@@ -30,6 +30,7 @@ password.env
 .env
 **.env
 .env.*
+!.env.template
 docker-compose.override.yml
 *.bak
 **.bak
