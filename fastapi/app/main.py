@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, Request
-from sqlmodel import Session, select
+from sqlmodel import SQLModel, Session, select
 from sqlalchemy import text
 from .auth import hash_password
 from .models import Link, Compeer # SQLModel class
@@ -44,6 +44,29 @@ def create_user(user_data: Compeer, request: Request):
 
 
 
+# VERIFY A COMPEER *Note *requires API_SECRET
+class CompeerVerify(SQLModel):
+    username: str
+@app.post("/pyapi/verify")
+def update_user_verification(user_data: CompeerVerify, request: Request):
+    token = request.headers.get("X-API-KEY")
+    if token != API_SECRET:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    try:
+        with Session(engine) as session:
+            statement = select(Compeer).where(Compeer.username == user_data.username)
+            user = session.exec(statement).first()
+            if not user:
+                raise HTTPException(status_code=404, detail="User not found")
+            user.verified = True
+            session.commit() 
+            session.refresh(user)
+        return {"status": "verified", "username": user.username}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Database error")
+
+
+
 # UPLOAD PROCESSING *Note *requires API_SECRET
 @app.post("/pyapi/upload")
 def create_link(link_data: Link, request: Request):
@@ -72,6 +95,19 @@ def check_username(username: str) -> bool:
         statement = select(Compeer).where(Compeer.username == username)
         result = session.exec(statement).first()
         return result is not None
+
+
+
+# GET VERIFICATION STATUS FOR A USERNAME
+@app.get("/pyapi/get-verification")
+def get_hash(username: str = Query(...)):
+    with Session(engine) as session:
+        statement = select(Compeer).where(Compeer.username == username)
+        user = session.exec(statement).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        return {"verified": user.verified}
+
 
 
 # GET PASSWORD HASH FOR A USERNAME

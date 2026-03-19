@@ -1,12 +1,16 @@
 /*
  * Node will work with React/Vite dev mode
- *  AND with their build served from the html folder (production)
+ *  AND with their build, which is served from the html folder in production
  * 
  * IMPORTANTLY
  *  ONLY calls through Node can actually ask FastAPI to alter the database.
  *  These calls are separated in this page of code, and visually distinct for the use of
  *   FASTAPI_URL, axios.post, *Notice
+ * 
+ * In production you should toggle VERIFICATION_REQUIRED to true,
+ *  and a
 */
+const VERIFICATION_REQUIRED = true;
 
 const utils = require("./utils.js");
 const express = require("express");
@@ -77,7 +81,7 @@ app.post("/api/signup", async(req, res) => {
         password_input: hash,
         signup_verification: signup_verification_string()
       }, 
-      {headers: { "X-API-KEY": API_SECRET }}
+      { headers: { "X-API-KEY": API_SECRET }}
     );
     res.json({ message: "Signed up", fastapi: response.data });
   } catch (err) {
@@ -100,12 +104,30 @@ app.post("/api/signin", async(req, res) => {
     return res.status(401).json({ message: "Invalid password" });
   }
 
+  // ensure a verified user if in production
+  if (VERIFICATION_REQUIRED) {
+    try {
+      const response = await fetch(`http://fastapi:8000/pyapi/get-verification?username=${username}`);
+      if (!response.ok) return false;
+      const data = await response.json();
+      console.log(data);
+      if (!data.verified) {
+        res.status(401).json({ message: "Unverified" });
+        return false;
+      }
+    } catch (err) {
+    res.status(500).json({ message: "Server error" + err });
+    return false;
+    }
+  }
+
   // hash and compare with db hash
   let match = false;
   try {
     const response = await fetch(`http://fastapi:8000/pyapi/get-hash?username=${username}`);
     if (!response.ok) return false;
     const data = await response.json();
+    console.log(data);
     const storedHash = data.hash;
     if (!storedHash) return false;
     match = await bcrypt.compare(password_input, storedHash);
@@ -218,7 +240,7 @@ app.post(
           description,
           photos: processedFiles
         }, 
-        {headers: { "X-API-KEY": API_SECRET }}
+        { headers: { "X-API-KEY": API_SECRET }}
       );
       res.json(response.data);
     } catch (err) {
