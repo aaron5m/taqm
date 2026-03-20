@@ -12,6 +12,31 @@ app = FastAPI()
 
 API_SECRET = os.getenv("API_SECRET")
 
+VITE_PASS_URL = os.getenv("VITE_PASS_URL", "")
+
+allowed_origins = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:8080",
+    "http://localhost:80",
+    "http://localhost:443",
+    "http://localhost",
+]
+
+if VITE_PASS_URL:
+    hostname = VITE_PASS_URL.replace("http://", "").replace("https://", "").split("/")[0]
+    allowed_origins.append(f"http://{hostname}:5173")
+    allowed_origins.append(f"http://{hostname}:5174")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+"""
 # MIDDLEWARE FOR REACT/VITE DEVELOPMENT
 app.add_middleware(
     CORSMiddleware,
@@ -25,7 +50,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+"""
 
 
 # SIGNUP PROCESSING *Note *requires API_SECRET

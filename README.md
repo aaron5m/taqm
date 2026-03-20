@@ -129,8 +129,8 @@ This separation enables small teams to experiment with **role-based responsibili
 ```
 ## Spin-up A Small Team
 
-1. SRE forks this repo and mocks up localhost .env for team (e.g. email)
-2. Frontend, Backend, and Data use docker and git pull/push/merge to coordinate local build, while
+1. SRE forks this repo and (optionally) sets up .env for UNSAFE http-only mode on the server
+2. Frontend, Backend, and Data use docker and git pull/push/merge to coordinate local (or UNSAFE) build, while
 3. SRE readies server with proxy rules, listeners, verification methods, and live .env
 
 **vnFM serves as a sandbox challenge for a new team to quickly flesh out**:
@@ -168,7 +168,8 @@ VITE_PASS_URL=""
 API_SECRET=*
 VERIFICATION_REQUIRED=0
 ```
- - VITE_PASS_URL should equal your domain name if you are going into production (https//yoursite.com)
+ - VITE_PASS_URL=https://your.domain if you are going into production
+ - VITE_PASS_URL=http://your.domain if you are going UNSAFE http-only on the server
  - VERIFICATION_REQUIRED should be 1 if you are going into production  
    - you will need to add your own method for verification (e.g. email a link)
    - (you can manually verify with `docker compose exec node node admin.js verify $username`)
