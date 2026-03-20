@@ -14,13 +14,11 @@ export default defineConfig({
 })
 */
 
-const vitePassUrl = JSON.stringify(process.env.VITE_PASS_URL);
-
 let config = {
   plugins: [react()],
   build: { outDir: "/app/dist" },
   define: {
-    'process.env.VITE_PASS_URL': vitePassUrl
+    'process.env.VITE_PASS_URL': JSON.stringify(process.env.VITE_PASS_URL)
   }
 };
 
@@ -28,7 +26,7 @@ if (vitePassUrl) {
   config.server = {
     host: '0.0.0.0',
     port: 5173,
-    allowedHosts: [new URL(vitePassUrl).hostname]
+    allowedHosts: [process.env.VITE_PASS_URL.replace(/^https?:\/\//, "")]
   };
 }
 
