@@ -92,13 +92,13 @@ services:
     ports:
       - "80:80"
     volumes:
-      - vite_dist:/app/dist
+      - ./html:/usr/share/nginx/html:ro
     depends_on:
       - node
       - fastapi
     profiles:
-      - http-only-nginx 
-
+      - http-only-nginx
+ 
 volumes:
   vite_dist:
   postgres_data:
