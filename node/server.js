@@ -32,7 +32,6 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const VERIFICATION_REQUIRED = Number(process.env.VERIFICATION_REQUIRED); // 0 means not required
 
 // Allow local/domain cors for nginx and React/Vite development
-// const vitePassUrl = process.env.VITE_PASS_URL ? process.env.VITE_PASS_URL : "http://localhost";
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
@@ -42,24 +41,15 @@ const allowedOrigins = [
   "http://localhost",
 ];
 if (process.env.VITE_PASS_URL) {
-  allowedOrigins.push(`${process.env.VITE_PASS_URL}:5173`);
-  allowedOrigins.push(`${process.env.VITE_PASS_URL}:5174`);
+  allowedOrigins.push(`http://${process.env.VITE_PASS_URL.replace(/^https?:\/\//, "")}:5173`);
+  allowedOrigins.push(`https://${process.env.VITE_PASS_URL.replace(/^https?:\/\//, "")}:5173`);
+  allowedOrigins.push(`http://${process.env.VITE_PASS_URL.replace(/^https?:\/\//, "")}:5174`);
+  allowedOrigins.push(`https://${process.env.VITE_PASS_URL.replace(/^https?:\/\//, "")}:5174`);
 }
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
 }));
-/*
-app.use(cors({
-  origin: ["http://localhost:5173", 
-    "http://localhost:5174", 
-    "http://localhost:8080", 
-    "http://localhost:80",
-    "http://localhost:443",
-    "http://localhost"],
-  credentials: true,
-}));
-*/
 
 
 
@@ -188,19 +178,6 @@ app.post("/api/signout", (req, res) => {
 });
 
 
-/*
-// AUTHORIZE
-app.post("/api/authorize", (req, res) => {
-  const token = req.cookies.access_token;
-  if (!token) return res.json({ loggedIn: false });
-  try {
-    const payload = jwt.verify(token, JWT_SECRET);
-    return res.json({ loggedIn: true, username: payload.sub });
-  } catch (e) {
-    return res.json({ loggedIn: false });
-  }
-});
-*/
 
 // AUTHORIZE
 app.post("/api/authorize", (req, res) => {

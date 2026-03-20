@@ -175,13 +175,34 @@ VERIFICATION_REQUIRED=0
    - (you can manually verify with `docker compose exec node node admin.js verify $username`)
 
 
-4. Compose with docker and apply alembic migrations, for example
+4. There three modes SANDBOX, UNSAFE-HTTP-ONLY, and PRODUCTION
+
+5. To run in SANDBOX on your local machine, compose http-only-nginx profile with docker and apply alembic migrations, for example
+```
+docker compose --profile http-only-nginx up -d --build
+docker compose exec fastapi alembic upgrade head
+```
+
+6. To run UNSAFE on a server, using only http on port 80, with nginx inside docker, change the .env file `VITE_PASS_URL=http://your.domain` and then
+```
+docker compose --profile http-only-nginx up -d --build
+docker compose exec fastapi alembic upgrade head
+```
+
+7. If you develop with Vite while running UNSAFE on a server you must
+```
+cd frontend
+npm install
+VITE_PASS_URL=http://your.domain npm run dev
+```
+
+8. If you are going into PRODUCTION change the .env file `VITE_PASS_URL=https://your.domain` and then
 ```
 docker compose up -d --build
 docker compose exec fastapi alembic upgrade head
 ```
 
-5. Add the reverse proxy to your server, for example with nginx, in /etc/nginx/sites-enabled/yoursite.conf
+9. If you are going into PRODUCTION, you must set up your own server and configure the reverse proxy to reach node and fastapi, for example with nginx, in /etc/nginx/sites-enabled/yoursite.conf
 ```
     # copy all this into the end of your server { ... here! } block
     # Node backend 
@@ -199,14 +220,14 @@ docker compose exec fastapi alembic upgrade head
     }
 ```
 
-6. Make sure your server is up, for example
+10. Make sure your server is up, for example
 `systemctl reload nginx`
 
-7. You may develop the frontend from the local machine with
+11. In PRODUCTION you may also develop beta with Vite
 ```
 cd frontend
 npm install
-npm run dev
+VITE_PASS_URL=https://your.domain npm run dev
 ```
 
 ---
