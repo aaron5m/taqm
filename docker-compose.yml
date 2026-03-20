@@ -86,6 +86,19 @@ services:
     networks:
       - backend
 
+  # Development-only nginx
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    volumes:
+      - vite_dist:/app/dist
+    depends_on:
+      - node
+      - fastapi
+    profiles:
+      - http-only-nginx 
+
 volumes:
   vite_dist:
   postgres_data:

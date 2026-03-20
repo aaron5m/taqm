@@ -29,7 +29,7 @@ app.use(cookieParser());
 const FASTAPI_URL = process.env.FASTAPI_URL;
 const API_SECRET = process.env.API_SECRET;
 const JWT_SECRET = process.env.JWT_SECRET;
-const VERIFICATION_REQUIRED = process.env.VERIFICATION_REQUIRED; // 0 means not required
+const VERIFICATION_REQUIRED = Number(process.env.VERIFICATION_REQUIRED); // 0 means not required
 
 // Allow local only cors for React/Vite development
 app.use(cors({
@@ -37,7 +37,8 @@ app.use(cors({
     "http://localhost:5174", 
     "http://localhost:8080", 
     "http://localhost:80",
-    "http://localhost:443"],
+    "http://localhost:443",
+    "http://localhost"],
   credentials: true,
 }));
 
