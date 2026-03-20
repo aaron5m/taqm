@@ -169,7 +169,7 @@ app.post("/api/signout", (req, res) => {
 });
 
 
-
+/*
 // AUTHORIZE
 app.post("/api/authorize", (req, res) => {
   const token = req.cookies.access_token;
@@ -181,6 +181,23 @@ app.post("/api/authorize", (req, res) => {
     return res.json({ loggedIn: false });
   }
 });
+*/
+
+// AUTHORIZE
+app.post("/api/authorize", (req, res) => {
+  const token = req.cookies.access_token;
+  const result = authorize(token);
+  return res.json(result);
+});
+const authorize = (token) => {
+  if (!token) return { loggedIn: false };
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    return { loggedIn: true, username: payload.sub };
+  } catch (e) {
+    return { loggedIn: false };
+  }
+};
 
 
 
@@ -201,6 +218,7 @@ app.post(
     { name: "back", maxCount: 1 },
   ]),
   async (req, res) => {
+    if (!authorize(req.cookies.access_token).loggedIn) return false; // block unauthorized posts
     try {
       const { username, url, title, description } = req.body;
       // validate username, url, and description
